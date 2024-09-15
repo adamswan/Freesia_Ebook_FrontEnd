@@ -7,7 +7,8 @@ const commonConfig: UserConfig = {
     host: true,
   },
   esbuild: {
-    drop: ['console', 'debugger'],
+    // 允许调试信息
+    // drop: ['console', 'debugger'],
   },
   build: {
     reportCompressedSize: false,
