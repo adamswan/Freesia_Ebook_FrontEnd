@@ -24,6 +24,7 @@ import { getPermCode } from '/@/api/sys/user';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { PageEnum } from '/@/enums/pageEnum';
 import { Full_Dose_Route_Map } from '/@/router/route-map';
+import { CommonTree, ToTreeItem } from '/#/menu';
 
 interface PermissionState {
   // Permission code list
@@ -205,10 +206,48 @@ export const usePermissionStore = defineStore({
         return res;
       };
 
-      const getAllMenuData = () => {
-        console.log('执行');
-        return getAllMenu();
+      // 对象数组转换为树形的嵌套数组
+      const transToTreeArr = (arr: ToTreeItem[]) => {
+        const tree: CommonTree = [];
+        const map: object[] = []; // 用对象 方便下面根据 id 查找值
+
+        for (let i = 0; i < arr.length; i++) {
+          map[arr[i].id] = arr[i];
+        }
+
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].pid === 0) {
+            tree.push(arr[i]);
+          } else {
+            const father: any = map[arr[i].pid];
+            if (father.children === undefined) {
+              father.children = [];
+            }
+            father.children.push(arr[i]);
+          }
+
+          // 单独处理 meta 属性
+          if (arr[i].meta) {
+            try {
+              arr[i].meta = JSON.parse(arr[i].meta);
+            } catch (e) {
+              console.log(e);
+            }
+          }
+        }
+
+        return tree;
       };
+
+      // 获取当前用户的所有菜单
+      const getAllMenuData = async () => {
+        const res = await getAllMenu();
+        return new Promise((resolve) => {
+          const tree = transToTreeArr(res);
+          resolve(tree);
+        });
+      };
+
       // 后端返回的用户路由权限
       let backendRouteList: AppRouteRecordRaw[] = [];
 
@@ -216,10 +255,10 @@ export const usePermissionStore = defineStore({
         // backendRouteList = asyncRoutes
         // console.log('项目具备的所有路由', asyncRoutes)
 
-        const allMenu = await getAllMenuData();
-        backendRouteList = JSON.parse(allMenu);
+        const allMenu = (await getAllMenuData()) as any;
+        backendRouteList = allMenu;
 
-        console.log('backendRouteList', backendRouteList);
+        // console.log('被处理后backendRouteList', backendRouteList);
 
         backendRouteList = findRoutesForThisUser(backendRouteList);
         backendRouteList = transToObj(backendRouteList);

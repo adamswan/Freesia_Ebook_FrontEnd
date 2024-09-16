@@ -1,4 +1,5 @@
 import { asyncRoutes } from '/@/router/routes';
+// console.log('asyncRoutes',  JSON.stringify(asyncRoutes))
 
 // 路由名 与 组件路径 的全量映射表
 export const Full_Dose_Route_Map = {
