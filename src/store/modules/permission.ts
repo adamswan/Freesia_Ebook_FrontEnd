@@ -13,7 +13,7 @@ import projectSetting from '/@/settings/projectSetting';
 
 import { PermissionModeEnum } from '/@/enums/appEnum';
 
-import { asyncRoutes } from '/@/router/routes';
+// import { asyncRoutes } from '/@/router/routes';
 import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
@@ -23,6 +23,7 @@ import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
 import { PageEnum } from '/@/enums/pageEnum';
+import { Full_Dose_Route_Map } from '/@/router/route-map';
 
 interface PermissionState {
   // Permission code list
@@ -168,11 +169,65 @@ export const usePermissionStore = defineStore({
         return;
       };
 
+      //! 到全量动态路由数组中查找该用户能具有的路由
+      const findRoutesForThisUser = (routes: AppRouteRecordRaw[]) => {
+        const res = routes.map((item) => {
+          if (item.children && item.children.length > 0) {
+            // 递归子路由
+            item.children = findRoutesForThisUser(item.children);
+          }
+
+          // 添加的导入组件路径
+          item['component'] = Full_Dose_Route_Map[item.name];
+
+          return item;
+        });
+        return res;
+      };
+
+      // 递归将后端返回的 role 转换为数组
+      const transToObj = (routes: any) => {
+        const res = routes.map((item) => {
+          if (item.children && item.children.length > 0) {
+            // 递归子路由
+            item.children = transToObj(item.children);
+          }
+
+          if (item?.meta?.roles) {
+            try {
+              item.meta.roles = JSON.parse(item.meta.roles);
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          return item;
+        });
+        return res;
+      };
+
+      // 后端返回的用户路由权限
+      let backendRouteList: AppRouteRecordRaw[] = [];
+
+      try {
+        // backendRouteList = asyncRoutes
+        // console.log('项目具备的所有路由', asyncRoutes)
+
+        backendRouteList = JSON.parse(
+          '[{"path":"/about","name":"About","redirect":"/about/index","meta":{"hideChildrenInMenu":true,"icon":"simple-icons:about-dot-me","title":"routes.dashboard.about","orderNo":100000},"children":[{"path":"index","name":"AboutPage","meta":{"title":"routes.dashboard.about","icon":"simple-icons:about-dot-me","hideMenu":true}}]},{"path":"/dashboard","name":"Dashboard","redirect":"/dashboard/analysis","meta":{"orderNo":10,"icon":"ion:grid-outline","title":"routes.dashboard.dashboard"},"children":[{"path":"analysis","name":"Analysis","meta":{"title":"routes.dashboard.analysis"}},{"path":"workbench","name":"Workbench","meta":{"title":"routes.dashboard.workbench"}}]}]',
+        );
+        console.log('backendRouteList', backendRouteList);
+
+        backendRouteList = findRoutesForThisUser(backendRouteList);
+        backendRouteList = transToObj(backendRouteList);
+      } catch (e) {
+        console.log(e);
+      }
+
       switch (permissionMode) {
         // 角色权限
         case PermissionModeEnum.ROLE:
           // 对非一级路由进行过滤
-          routes = filter(asyncRoutes, routeFilter);
+          routes = filter(backendRouteList, routeFilter);
           // 对一级路由根据角色权限过滤
           routes = routes.filter(routeFilter);
           // Convert multi-level routing to level 2 routing
@@ -183,7 +238,7 @@ export const usePermissionStore = defineStore({
         // 路由映射， 默认进入该case
         case PermissionModeEnum.ROUTE_MAPPING:
           // 对非一级路由进行过滤
-          routes = filter(asyncRoutes, routeFilter);
+          routes = filter(backendRouteList, routeFilter);
           // 对一级路由再次根据角色权限过滤
           routes = routes.filter(routeFilter);
           // 将路由转换成菜单
