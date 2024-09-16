@@ -18,7 +18,7 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
 
-import { getMenuList } from '/@/api/sys/menu';
+import { getAllMenu, getMenuList } from '/@/api/sys/menu';
 import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
@@ -205,6 +205,10 @@ export const usePermissionStore = defineStore({
         return res;
       };
 
+      const getAllMenuData = () => {
+        console.log('执行');
+        return getAllMenu();
+      };
       // 后端返回的用户路由权限
       let backendRouteList: AppRouteRecordRaw[] = [];
 
@@ -212,9 +216,9 @@ export const usePermissionStore = defineStore({
         // backendRouteList = asyncRoutes
         // console.log('项目具备的所有路由', asyncRoutes)
 
-        backendRouteList = JSON.parse(
-          '[{"path":"/about","name":"About","redirect":"/about/index","meta":{"hideChildrenInMenu":true,"icon":"simple-icons:about-dot-me","title":"routes.dashboard.about","orderNo":100000},"children":[{"path":"index","name":"AboutPage","meta":{"title":"routes.dashboard.about","icon":"simple-icons:about-dot-me","hideMenu":true}}]},{"path":"/dashboard","name":"Dashboard","redirect":"/dashboard/analysis","meta":{"orderNo":10,"icon":"ion:grid-outline","title":"routes.dashboard.dashboard"},"children":[{"path":"analysis","name":"Analysis","meta":{"title":"routes.dashboard.analysis"}},{"path":"workbench","name":"Workbench","meta":{"title":"routes.dashboard.workbench"}}]}]',
-        );
+        const allMenu = await getAllMenuData();
+        backendRouteList = JSON.parse(allMenu);
+
         console.log('backendRouteList', backendRouteList);
 
         backendRouteList = findRoutesForThisUser(backendRouteList);
