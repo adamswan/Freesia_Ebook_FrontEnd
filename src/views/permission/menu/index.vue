@@ -40,6 +40,7 @@
 
   import { columns, searchFormSchema } from './menu.data';
   import { type Recordable } from '@vben/types';
+  import { DeleteMenu } from '/@/api/sys/menu';
 
   export default defineComponent({
     name: 'MenuManagement',
@@ -78,14 +79,17 @@
       }
 
       function handleEdit(record: Recordable<any>) {
+        console.log('record', record);
+        record.active = record.active.toString();
         openDrawer(true, {
           record,
           isUpdate: true,
         });
       }
 
-      function handleDelete(record: Recordable<any>) {
-        console.log(record);
+      async function handleDelete(record: Recordable<any>) {
+        await DeleteMenu(record.id);
+        handleSuccess();
       }
 
       function handleSuccess() {

@@ -39,10 +39,8 @@ export const columns: BasicColumn[] = [
     dataIndex: 'status',
     width: 80,
     customRender: ({ record }) => {
-      // const status = record.active === 1;
-      // const enable = ~~status === 1;
-      const color = record.active === 1 ? 'green' : 'red';
-      const text = record.active === 1 ? '启用' : '停用';
+      const color = Number(record.active) === 1 ? 'green' : 'red';
+      const text = Number(record.active) === 1 ? '启用' : '停用';
       return h(Tag, { color: color }, () => text);
     },
   },
@@ -165,7 +163,8 @@ export const formSchema: FormSchema[] = [
   //   ifShow: ({ values }) => !isDir(values.type),
   // },
   {
-    field: 'status',
+    // field: 'status',
+    field: 'active',
     label: '状态',
     component: 'RadioButtonGroup',
     defaultValue: '1',

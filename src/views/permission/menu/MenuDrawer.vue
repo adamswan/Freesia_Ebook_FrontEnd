@@ -17,7 +17,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
 
   import { getMenuList } from '/@/api/demo/system';
-  import { createMenu } from '/@/api/sys/menu';
+  import { createMenu, UpdateMenu } from '/@/api/sys/menu';
 
   export default defineComponent({
     name: 'MenuDrawer',
@@ -25,6 +25,8 @@
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
+
+      let allData; // 当前表格所有数据
 
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 100,
@@ -44,6 +46,7 @@
           });
         }
         const treeData = await getMenuList();
+        allData = treeData;
         updateSchema({
           field: 'parentMenu',
           componentProps: { treeData },
@@ -55,13 +58,17 @@
       async function handleSubmit() {
         try {
           const values = await validate();
+
           setDrawerProps({ confirmLoading: true });
+
           if (values.parentMenu === undefined) {
             values.pid = 0;
           } else {
             values.pid = values.parentMenu;
           }
-          values.status = Number(values.status);
+
+          values.active = Number(values.active);
+
           console.log('99', values);
 
           const oData = {
@@ -69,12 +76,22 @@
             name: values.name,
             redirect: values.redirect,
             pid: values.pid,
-            active: values.status,
-            meta: JSON.stringify(values.meta),
+            active: values.active,
+            meta: values.meta,
+            // meta: JSON.stringify(values.meta),
           };
           console.log('1000', oData);
 
-          await createMenu(oData);
+          if (getTitle.value === '新增菜单') {
+            // 新增
+            await createMenu(oData);
+          } else {
+            // 编辑
+            // 找到当前菜单的id
+            let target = allData.find((item) => item.name === values.name);
+            console.log('target', target);
+            await UpdateMenu(target.id, oData);
+          }
 
           closeDrawer();
           emit('success');
