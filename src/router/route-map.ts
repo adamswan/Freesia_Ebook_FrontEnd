@@ -17,4 +17,4 @@ function getFromAsyncRoutes(asyncRoutes: any[]) {
 }
 getFromAsyncRoutes(asyncRoutes);
 
-console.log('扁平关系', Full_Dose_Route_Map);
+// console.log('扁平关系', Full_Dose_Route_Map);

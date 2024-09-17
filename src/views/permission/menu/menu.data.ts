@@ -50,6 +50,7 @@ export const columns: BasicColumn[] = [
 // const isMenu = (type: string) => type === '1';
 // const isButton = (type: string) => type === '2';
 
+// 上方的条件查询
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'menuName',
@@ -58,7 +59,7 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 8 },
   },
   {
-    field: 'status',
+    field: 'active',
     label: '状态',
     component: 'Select',
     componentProps: {

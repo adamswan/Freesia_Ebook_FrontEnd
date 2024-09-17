@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 表格 -->
     <BasicTable @register="registerTable" @fetch-success="onFetchSuccess">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增菜单 </a-button>
@@ -26,6 +27,7 @@
         </template>
       </template>
     </BasicTable>
+    <!-- 抽屉 -->
     <MenuDrawer @register="registerDrawer" @success="handleSuccess" />
   </div>
 </template>
@@ -58,7 +60,7 @@
         isTreeTable: true,
         pagination: false,
         striped: false,
-        useSearchForm: true,
+        useSearchForm: false, // 关闭条件查询
         showTableSetting: true,
         bordered: true,
         showIndexColumn: false,
