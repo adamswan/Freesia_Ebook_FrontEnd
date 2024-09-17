@@ -18,6 +18,7 @@
 
   import { getMenuList } from '/@/api/demo/system';
   import { createMenu, UpdateMenu } from '/@/api/sys/menu';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'MenuDrawer',
@@ -27,6 +28,7 @@
       const isUpdate = ref(true);
 
       let allData; // 当前表格所有数据
+      const { createMessage } = useMessage();
 
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 100,
@@ -69,8 +71,6 @@
 
           values.active = Number(values.active);
 
-          console.log('99', values);
-
           const oData = {
             path: values.path,
             name: values.name,
@@ -80,7 +80,6 @@
             meta: values.meta,
             // meta: JSON.stringify(values.meta),
           };
-          console.log('1000', oData);
 
           if (getTitle.value === '新增菜单') {
             // 新增
@@ -89,9 +88,9 @@
             // 编辑
             // 找到当前菜单的id
             let target = allData.find((item) => item.name === values.name);
-            console.log('target', target);
             await UpdateMenu(target.id, oData);
           }
+          createMessage.success('操作成功');
 
           closeDrawer();
           emit('success');

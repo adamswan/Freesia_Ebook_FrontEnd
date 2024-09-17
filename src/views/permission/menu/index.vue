@@ -81,6 +81,7 @@
       function handleEdit(record: Recordable<any>) {
         console.log('record', record);
         record.active = record.active.toString();
+        record.parentMenu = record.pid;
         openDrawer(true, {
           record,
           isUpdate: true,
