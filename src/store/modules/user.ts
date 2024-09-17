@@ -125,12 +125,22 @@ export const useUserStore = defineStore({
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null;
       const userInfo = await getUserInfo();
+
       console.log('userInfo', userInfo);
+
       // const { role = [] } = userInfo;
+
       const role: any = userInfo.role || [];
+
       const roles = JSON.parse(role);
+      // console.log('角色', roles);
+
       if (isArray(roles)) {
-        const roleList = roles.map((item) => item.value) as RoleEnum[];
+        // 原来的：
+        // const roleList = roles.map((item) => item.value) as RoleEnum[];
+
+        // 我改的
+        const roleList = roles as RoleEnum[];
         this.setRoleList(roleList);
       } else {
         userInfo.roles = [];

@@ -18,7 +18,7 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
 
-import { getAllMenu, getMenuList } from '/@/api/sys/menu';
+import { getActiveMenu, getMenuList } from '/@/api/sys/menu';
 import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
@@ -220,10 +220,12 @@ export const usePermissionStore = defineStore({
             tree.push(arr[i]);
           } else {
             const father: any = map[arr[i].pid];
-            if (father.children === undefined) {
-              father.children = [];
+            if (father) {
+              if (father.children === undefined) {
+                father.children = [];
+              }
+              father.children.push(arr[i]);
             }
-            father.children.push(arr[i]);
           }
 
           // 单独处理 meta 属性
@@ -239,9 +241,9 @@ export const usePermissionStore = defineStore({
         return tree;
       };
 
-      // 获取当前用户的所有菜单
+      // 获取当前用户的已激活的菜单
       const getAllMenuData = async () => {
-        const res = await getAllMenu();
+        const res = await getActiveMenu();
         return new Promise((resolve) => {
           const tree = transToTreeArr(res);
           resolve(tree);

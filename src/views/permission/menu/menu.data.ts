@@ -1,53 +1,50 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
-import Icon from '@/components/Icon/Icon.vue';
+import { Tag, Tooltip } from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
   {
-    title: '菜单名称',
-    dataIndex: 'menuName',
-    width: 200,
-    align: 'left',
+    title: '菜单ID',
+    dataIndex: 'id',
+    width: 100,
   },
   {
-    title: '图标',
-    dataIndex: 'icon',
-    width: 50,
-    customRender: ({ record }) => {
-      return h(Icon, { icon: record.icon });
+    title: '菜单路径',
+    dataIndex: 'path',
+    width: 200,
+  },
+  {
+    title: '菜单名称',
+    dataIndex: 'name',
+    width: 200,
+  },
+  {
+    title: '重定向',
+    dataIndex: 'redirect',
+  },
+  {
+    title: '元数据',
+    dataIndex: 'meta',
+    customRender: ({ text }) => {
+      return h(Tooltip, { title: text, placement: 'top' }, () => text.slice(0, 40) + '...');
     },
   },
   {
-    title: '权限标识',
-    dataIndex: 'permission',
-    width: 180,
-  },
-  {
-    title: '组件',
-    dataIndex: 'component',
-  },
-  {
-    title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
+    title: '父级菜单ID',
+    dataIndex: 'pid',
+    width: 100,
   },
   {
     title: '状态',
     dataIndex: 'status',
     width: 80,
     customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 0;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '停用';
+      // const status = record.active === 1;
+      // const enable = ~~status === 1;
+      const color = record.active === 1 ? 'green' : 'red';
+      const text = record.active === 1 ? '启用' : '停用';
       return h(Tag, { color: color }, () => text);
     },
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    width: 180,
   },
 ];
 

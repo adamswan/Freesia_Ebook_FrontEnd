@@ -3,7 +3,7 @@ import { getMenuListResultModel } from './model/menuModel';
 
 enum Api {
   GetMenuList = '/getMenuList',
-  GetAllMenu = 'menu',
+  GetActiveMenu = 'menu/active',
 }
 
 /**
@@ -15,6 +15,6 @@ export const getMenuList = () => {
 };
 
 // 获取当前用户所拥有的所有菜单权限
-export const getAllMenu = () => {
-  return defHttp.get({ url: Api.GetAllMenu });
+export const getActiveMenu = () => {
+  return defHttp.get({ url: Api.GetActiveMenu });
 };
