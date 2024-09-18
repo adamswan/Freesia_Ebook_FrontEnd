@@ -1,18 +1,46 @@
+import { SearchBook } from '/#/book';
+import { getBookList } from '/@/api/book/book';
 import { FormSchema } from '/@/components/Form/index';
+import { cleanup } from './index.vue';
 
-export const searchList = (() => {
+export const searchList: any = async (query: SearchBook) => {
   const result: any[] = [];
-  for (let i = 0; i < 6; i++) {
+
+  const toQuery: any = {};
+
+  if (query.name) {
+    // 书名
+    toQuery['name'] = query.name;
+  }
+  if (query.author) {
+    // 作者
+    toQuery['author'] = query.author;
+  }
+
+  toQuery['page'] = query.page;
+  toQuery['pageSize'] = query.pageSize;
+
+  const data = await getBookList(toQuery);
+
+  for (let i = 0; i < data.res.length; i++) {
+    const item = data.res[i];
     result.push({
-      id: i,
-      title: 'Vben Admin',
-      description: ['Vben', '设计语言', 'Typescript'],
-      content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
-      time: '2020-11-14 11:20',
+      id: item.id, // 数据库中的id
+      title: item.title, // 书名
+      description: [item.categoryText, item.language],
+      content: item.author, // 作者
+      time: item.publisher, // 出版商
+      src: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
     });
   }
-  return result;
-})();
+
+  console.log('返回出去的', result, data);
+
+  return {
+    result,
+    total: data.total,
+  };
+};
 
 export const actions: any[] = [
   { icon: 'clarity:star-line', text: '156', color: '#018ffb' },
@@ -29,8 +57,10 @@ export const schemas: FormSchema[] = [
       span: 8,
     },
     componentProps: {
-      onChange: () => {
-        // console.log(e);
+      onChange: (e) => {
+        if (e.target.value.length === 0) {
+          cleanup('name');
+        }
       },
     },
   },
@@ -42,8 +72,10 @@ export const schemas: FormSchema[] = [
       span: 8,
     },
     componentProps: {
-      onChange: () => {
-        // console.log(e);
+      onChange: (e) => {
+        if (e.target.value.length === 0) {
+          cleanup('author');
+        }
       },
     },
   },
