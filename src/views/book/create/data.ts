@@ -1,85 +1,116 @@
+import axios from 'axios';
 import { FormSchema } from '/@/components/Form';
+import { useGlobSetting } from '/@/hooks/setting';
+import { getToken } from '/@/utils/auth';
 
 const basicOptions: LabelValueOptions = [
   {
-    label: '付晓晓',
-    value: '1',
+    label: '英文',
+    value: 'en',
   },
   {
-    label: '周毛毛',
-    value: '2',
+    label: '中文',
+    value: 'cn',
   },
 ];
 
-const storeTypeOptions: LabelValueOptions = [
+const cateOptions: LabelValueOptions = [
   {
-    label: '私密',
-    value: '1',
+    label: '人文',
+    value: 1,
   },
   {
-    label: '公开',
-    value: '2',
+    label: '社科',
+    value: 2,
+  },
+  {
+    label: '小说',
+    value: 3,
   },
 ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'f1',
+    field: 'title',
     component: 'Input',
-    label: '仓库名',
+    label: '书名',
     required: true,
   },
+
   {
-    field: 'f2',
+    field: 'author',
     component: 'Input',
-    label: '仓库域名',
-    required: true,
-    componentProps: {
-      addonBefore: 'http://',
-      addonAfter: 'com',
-    },
-    colProps: {
-      offset: 2,
-    },
-  },
-  {
-    field: 'f3',
-    component: 'Select',
-    label: '仓库管理员',
-    componentProps: {
-      options: basicOptions,
-    },
+    label: '作者',
     required: true,
     colProps: {
       offset: 2,
     },
   },
+
   {
-    field: 'f4',
+    field: 'publisher',
+    component: 'Input',
+    label: '出版社',
+    required: true,
+    colProps: {
+      offset: 2,
+    },
+  },
+
+  {
+    field: 'language',
     component: 'Select',
-    label: '审批人',
+    label: '语言',
     componentProps: {
       options: basicOptions,
     },
     required: true,
   },
+
   {
-    field: 'f5',
-    component: 'RangePicker',
-    label: '生效日期',
+    field: 'category',
+    component: 'Select',
+    label: '类别',
+    componentProps: {
+      options: cateOptions,
+    },
     required: true,
     colProps: {
       offset: 2,
     },
   },
+
   {
-    field: 'f6',
-    component: 'Select',
-    label: '仓库类型',
+    field: 'filePath',
+    component: 'Input',
+    label: '文件路径',
     componentProps: {
-      options: storeTypeOptions,
+      disabled: true,
     },
-    required: true,
+    // required: true,
+    colProps: {
+      offset: 2,
+    },
+  },
+
+  {
+    field: 'coverPath',
+    component: 'Input',
+    label: '封面路径',
+    componentProps: {
+      disabled: true,
+    },
+    // required: true
+  },
+
+  {
+    field: 'rootFile',
+    component: 'Input',
+    label: '根路径',
+    componentProps: {
+      disabled: true,
+    },
+    // required: true,
     colProps: {
       offset: 2,
     },
@@ -87,63 +118,33 @@ export const schemas: FormSchema[] = [
 ];
 export const taskSchemas: FormSchema[] = [
   {
-    field: 't1',
-    component: 'Input',
-    label: '任务名',
-    required: true,
-  },
-  {
-    field: 't2',
-    component: 'Input',
-    label: '任务描述',
-    required: true,
-    colProps: {
-      offset: 2,
-    },
-  },
-  {
-    field: 't3',
-    component: 'Select',
-    label: '执行人',
-    componentProps: {
-      options: basicOptions,
-    },
-    required: true,
-    colProps: {
-      offset: 2,
-    },
-  },
-  {
-    field: 't4',
-    component: 'Select',
-    label: '责任人',
-    componentProps: {
-      options: basicOptions,
-    },
-    required: true,
-  },
-  {
-    field: 't5',
-    component: 'TimePicker',
-    label: '生效日期',
+    field: 'book',
+    component: 'Upload',
+    label: '电子书',
     required: true,
     componentProps: {
-      style: { width: '100%' },
-    },
-    colProps: {
-      offset: 2,
-    },
-  },
-  {
-    field: 't6',
-    component: 'Select',
-    label: '任务类型',
-    componentProps: {
-      options: storeTypeOptions,
-    },
-    required: true,
-    colProps: {
-      offset: 2,
+      maxSize: 50,
+      maxNumber: 1,
+      accept: ['epub'],
+      api: (data) => {
+        // 参数 data 就是文件对象
+        const formData = new FormData();
+        formData.append('file', data.file);
+
+        // 获取上传地址
+        const globalSetting = useGlobSetting();
+        const apiURL = globalSetting.apiUrl;
+        const requestURL = `${apiURL}book/upload`;
+
+        console.log('上传的url', requestURL);
+
+        return axios.post(requestURL, formData, {
+          headers: {
+            'Content-Type': data.file.type,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+      },
     },
   },
 ];
