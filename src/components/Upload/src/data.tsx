@@ -1,12 +1,12 @@
 import type { BasicColumn, ActionItem } from '/@/components/Table';
-import { FileItem, PreviewFileItem, UploadResultStatus } from './typing';
-import {
-  // checkImgType,
-  isImgTypeByName,
-} from './helper';
+import { FileItem, UploadResultStatus } from './typing';
+// import {
+//   // checkImgType,
+//   isImgTypeByName,
+// } from './helper';
 import { Progress, Tag } from 'ant-design-vue';
 import TableAction from '/@/components/Table/src/components/TableAction.vue';
-import ThumbUrl from './ThumbUrl.vue';
+// import ThumbUrl from './ThumbUrl.vue';
 import { useI18n } from '/@/hooks/web/useI18n';
 
 const { t } = useI18n();
@@ -14,15 +14,15 @@ const { t } = useI18n();
 // 文件上传列表
 export function createTableColumns(): BasicColumn[] {
   return [
-    {
-      dataIndex: 'thumbUrl',
-      title: t('component.upload.legend'),
-      width: 100,
-      customRender: ({ record }) => {
-        const { thumbUrl } = (record as FileItem) || {};
-        return thumbUrl && <ThumbUrl fileUrl={thumbUrl} />;
-      },
-    },
+    // {
+    //   dataIndex: 'thumbUrl',
+    //   title: t('component.upload.legend'),
+    //   width: 100,
+    //   customRender: ({ record }) => {
+    //     const { thumbUrl } = (record as FileItem) || {};
+    //     return thumbUrl && <ThumbUrl fileUrl={thumbUrl} />;
+    //   },
+    // },
     {
       dataIndex: 'name',
       title: t('component.upload.fileName'),
@@ -105,15 +105,15 @@ export function createActionColumn(handleRemove: Function): BasicColumn {
 // 文件预览列表
 export function createPreviewColumns(): BasicColumn[] {
   return [
-    {
-      dataIndex: 'url',
-      title: t('component.upload.legend'),
-      width: 100,
-      customRender: ({ record }) => {
-        const { url } = (record as PreviewFileItem) || {};
-        return isImgTypeByName(url) && <ThumbUrl fileUrl={url} />;
-      },
-    },
+    // {
+    //   dataIndex: 'url',
+    //   title: t('component.upload.legend'),
+    //   width: 100,
+    //   customRender: ({ record }) => {
+    //     const { url } = (record as PreviewFileItem) || {};
+    //     return isImgTypeByName(url) && <ThumbUrl fileUrl={url} />;
+    //   },
+    // },
     {
       dataIndex: 'name',
       title: t('component.upload.fileName'),

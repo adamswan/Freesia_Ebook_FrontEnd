@@ -27,12 +27,12 @@
       @delete="handleDelete"
     />
 
-    <UploadPreviewModal
+    <!-- <UploadPreviewModal
       :value="fileList"
       @register="registerPreviewModal"
       @list-change="handlePreviewChange"
       @delete="handlePreviewDelete"
-    />
+    /> -->
   </div>
 </template>
 <script lang="ts">
@@ -46,11 +46,11 @@
   import { useI18n } from '/@/hooks/web/useI18n';
   import { isArray } from '/@/utils/is';
   import UploadModal from './UploadModal.vue';
-  import UploadPreviewModal from './UploadPreviewModal.vue';
+  // import UploadPreviewModal from './UploadPreviewModal.vue';
 
   export default defineComponent({
     name: 'BasicUpload',
-    components: { UploadModal, Space, UploadPreviewModal, Icon, Tooltip },
+    components: { UploadModal, Space, Icon, Tooltip },
     props: uploadContainerProps,
     emits: ['change', 'delete', 'preview-delete', 'update:value'],
 

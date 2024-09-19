@@ -10,7 +10,7 @@ const basicOptions: LabelValueOptions = [
   },
   {
     label: '中文',
-    value: 'cn',
+    value: 'zh',
   },
 ];
 
@@ -81,7 +81,7 @@ export const schemas: FormSchema[] = [
   },
 
   {
-    field: 'filePath',
+    field: 'fileName',
     component: 'Input',
     label: '文件路径',
     componentProps: {
@@ -116,35 +116,73 @@ export const schemas: FormSchema[] = [
     },
   },
 ];
-export const taskSchemas: FormSchema[] = [
-  {
-    field: 'book',
-    component: 'Upload',
-    label: '电子书',
-    required: true,
-    componentProps: {
-      maxSize: 50,
-      maxNumber: 1,
-      accept: ['epub'],
-      api: (data) => {
-        // 参数 data 就是文件对象
-        const formData = new FormData();
-        formData.append('file', data.file);
+export const taskSchemas = (setFieldsValue, contentData): FormSchema[] => {
+  return [
+    {
+      field: 'book',
+      component: 'Upload',
+      label: '电子书',
+      required: true,
+      componentProps: {
+        maxSize: 50,
+        maxNumber: 1,
+        accept: ['epub'],
+        api: (data) => {
+          // 参数 data 就是文件对象
+          const formData = new FormData();
+          formData.append('file', data.file);
 
-        // 获取上传地址
-        const globalSetting = useGlobSetting();
-        const apiURL = globalSetting.apiUrl;
-        const requestURL = `${apiURL}book/upload`;
+          // 获取上传地址
+          const globalSetting = useGlobSetting();
+          const apiURL = globalSetting.apiUrl;
+          const requestURL = `${apiURL}book/upload`;
 
-        console.log('上传的url', requestURL);
+          console.log('上传的url', requestURL);
 
-        return axios.post(requestURL, formData, {
-          headers: {
-            'Content-Type': data.file.type,
-            Authorization: `Bearer ${getToken()}`,
-          },
-        });
+          return axios.post(requestURL, formData, {
+            headers: {
+              'Content-Type': data.file.type,
+              Authorization: `Bearer ${getToken()}`,
+            },
+          });
+        },
+        onChange: (files) => {
+          console.log('files', files);
+
+          if (!files || files.length < 1) {
+            return;
+          }
+          const data = files[0].bookInfo_and_content;
+          // console.log('files---data', data)
+          const theFiledata = files[0];
+
+          console.log('theFiledata', theFiledata);
+
+          const title = data.title;
+          const author = data.creator;
+          const publisher = data.publisher;
+          const language = data.language;
+          const filePath = data.rootFile;
+          const coverPath = data.cover;
+          const rootFile = data.rootFile;
+          const fileName = theFiledata.originalname;
+
+          setFieldsValue({
+            title,
+            author,
+            publisher,
+            language,
+            filePath,
+            coverPath,
+            rootFile,
+            fileName,
+          });
+
+          contentData.value = data.contentRes;
+
+          console.log('contentData.value', contentData.value);
+        },
       },
     },
-  },
-];
+  ];
+};

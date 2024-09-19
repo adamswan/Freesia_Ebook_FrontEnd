@@ -30,11 +30,9 @@ export const searchList: any = async (query: SearchBook) => {
       description: [item.categoryText, item.language],
       content: item.author, // 作者
       time: item.publisher, // 出版商
-      src: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+      src: item.cover,
     });
   }
-
-  console.log('返回出去的', result, data);
 
   return {
     result,

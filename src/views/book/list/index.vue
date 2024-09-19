@@ -11,6 +11,7 @@
     </template>
 
     <div :class="`${prefixCls}__container`">
+      <!-- 列表 -->
       <a-list>
         <template v-for="item in list" :key="item.id">
           <a-list-item>
@@ -49,6 +50,8 @@
           </a-list-item>
         </template>
       </a-list>
+
+      <!-- 分页 -->
       <a-pagination
         :total="totalNum"
         :show-total="(total) => `共计 ${total} 项`"
