@@ -20,13 +20,20 @@
                 <div :class="`${prefixCls}__action`">
                   <span :class="`${prefixCls}__time`">{{ item.time }}</span>
                 </div>
+                <div :class="`${prefixCls}__action`">
+                  <a-button
+                    type="primary"
+                    danger
+                    @click="handleDelete(item.id)"
+                    style="margin-top: 30px"
+                    >删除</a-button
+                  >
+                </div>
               </template>
 
               <template #title>
                 <!-- 书名 -->
-                <p :class="`${prefixCls}__title`">
-                  {{ item.title }}
-                </p>
+                <p :class="`${prefixCls}__title`"> {{ item.title }}（{{ item.id }}） </p>
                 <!-- 作者 -->
                 <div :class="`${prefixCls}__content`" class="the-writer">
                   {{ item.content }}
@@ -66,13 +73,15 @@
 </template>
 
 <script lang="ts">
-  import { Tag, List, Pagination } from 'ant-design-vue';
+  import { Tag, List, Pagination, Modal } from 'ant-design-vue';
   import { defineComponent, ref } from 'vue';
   // import Icon from '@/components/Icon/Icon.vue';
   import { BasicForm } from '/@/components/Form/index';
   import { actions, searchList, schemas } from './data';
   import { PageWrapper } from '/@/components/Page';
   import { BookList } from '/#/book';
+  import { deleteBook } from '/@/api/book/book';
+  import { useMessage } from '/@/hooks/web/useMessage';
   // import { prefixCls } from '/@/settings/designSetting';
 
   const totalNum = ref(888);
@@ -80,6 +89,7 @@
   const pageSizeNum = ref(10);
   const bookName = ref('');
   const bookAuthor = ref('');
+  const { createMessage } = useMessage();
 
   // 用于清空条件搜索的ref变量
   export const cleanup = (type: string) => {
@@ -129,6 +139,18 @@
     getList(queryObj);
   };
 
+  const init = async () => {
+    const { result, total } = await searchList({
+      page: 1,
+      pageSize: 10,
+    });
+
+    // 当前查询结果
+    list.value = result;
+    // 数据总条数
+    totalNum.value = total;
+  };
+
   // page 或 pageSize 改变是回调
   const handleChange = (page, pageSize) => {
     const queryObj = {};
@@ -149,6 +171,21 @@
     console.log('翻页queryObj', queryObj);
 
     getList(queryObj);
+  };
+
+  const handleDelete = (id: number) => {
+    Modal.confirm({
+      title: '确认删除？',
+      content: `确认删除id为${id}的电子书吗？`,
+      onOk: async () => {
+        await deleteBook(id);
+        createMessage.success('删除成功');
+        init();
+      },
+      onCancel() {
+        console.log('onCancel');
+      },
+    });
   };
 
   export default defineComponent({
@@ -177,21 +214,13 @@
         getList,
         bookName,
         bookAuthor,
+        handleDelete,
+        init,
       };
     },
 
     async mounted() {
-      const { result, total } = await searchList({
-        page: 1,
-        pageSize: 20,
-      });
-
-      console.log('挂载result', result);
-      console.log('挂载total', total);
-      // 当前查询结果
-      list.value = result;
-      // 数据总条数
-      totalNum.value = total;
+      init();
     },
   });
 </script>

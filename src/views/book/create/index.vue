@@ -26,12 +26,14 @@
   import { Card } from 'ant-design-vue';
   import { addBook } from '/@/api/book/book';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { useRouter } from 'vue-router';
 
   export default defineComponent({
     name: 'FormHightPage',
     components: { BasicForm, PersonTable, PageWrapper, [Card.name]: Card },
     setup() {
       const contentData = ref([]);
+      const router = useRouter();
 
       const { createMessage } = useMessage();
       const tableRef = ref<{ getDataSource: () => any } | null>(null);
@@ -70,6 +72,8 @@
 
           await addBook(values);
           createMessage.success('添加成功');
+          // 回到列表页
+          router.push('/book/list');
         } catch (error) {
           console.log(error);
         }

@@ -14,7 +14,7 @@ const basicOptions: LabelValueOptions = [
   },
 ];
 
-const cateOptions: LabelValueOptions = [
+export const cateOptions: LabelValueOptions = [
   {
     label: '人文',
     value: 1,

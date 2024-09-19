@@ -4,6 +4,7 @@ import { defHttp } from '/@/utils/http/axios';
 enum Api {
   GetBookList = 'book',
   AddBook = 'book',
+  DeleteBook = 'book',
 }
 
 export const getBookList = (query: SearchBook) => {
@@ -18,4 +19,8 @@ export const addBook = (body) => {
     url: Api.AddBook,
     data: body,
   });
+};
+
+export const deleteBook = (id) => {
+  return defHttp.delete({ url: `${Api.DeleteBook}/${id}` });
 };

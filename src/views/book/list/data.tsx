@@ -2,6 +2,7 @@ import { SearchBook } from '/#/book';
 import { getBookList } from '/@/api/book/book';
 import { FormSchema } from '/@/components/Form/index';
 import { cleanup } from './index.vue';
+import { cateOptions } from '@/views/book/create/data';
 
 export const searchList: any = async (query: SearchBook) => {
   const result: any[] = [];
@@ -24,10 +25,11 @@ export const searchList: any = async (query: SearchBook) => {
 
   for (let i = 0; i < data.res.length; i++) {
     const item = data.res[i];
+    const res = cateOptions.find((ele) => ele.value === item.category);
     result.push({
       id: item.id, // 数据库中的id
       title: item.title, // 书名
-      description: [item.categoryText, item.language],
+      description: [(res && res!.label) || '未知', item.language],
       content: item.author, // 作者
       time: item.publisher, // 出版商
       src: item.cover,
