@@ -24,7 +24,7 @@
   import { PageWrapper } from '/@/components/Page';
   import { schemas, taskSchemas } from './data';
   import { Card } from 'ant-design-vue';
-  import { addBook } from '/@/api/book/book';
+  import { addBook, addContents } from '/@/api/book/book';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useRouter } from 'vue-router';
 
@@ -60,17 +60,32 @@
 
       async function submitAll() {
         try {
-          // if (tableRef.value) {
-          //   console.log('table data:', tableRef.value.getDataSource());
-          // }
+          const contentsData = tableRef!.value!.getDataSource();
 
-          console.log('进入submitAll');
+          console.log('contentsData:', contentsData);
+
           const [values, taskValues] = await Promise.all([validate(), validateTaskForm()]);
 
           console.log('3333', values);
           console.log('444', taskValues);
 
+          // 添加书
           await addBook(values);
+
+          // 批量添加目录
+          for (let k of contentsData) {
+            await addContents({
+              fileName: values.fileName,
+              charterId: k.id,
+              href: k.href,
+              order: k.playOrder,
+              level: 0,
+              text: k.text,
+              label: k.text,
+              pid: '空',
+              navId: k.id,
+            });
+          }
           createMessage.success('添加成功');
           // 回到列表页
           router.push('/book/list');

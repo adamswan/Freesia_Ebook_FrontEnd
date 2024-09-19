@@ -80,7 +80,7 @@
   import { actions, searchList, schemas } from './data';
   import { PageWrapper } from '/@/components/Page';
   import { BookList } from '/#/book';
-  import { deleteBook } from '/@/api/book/book';
+  import { delContents, deleteBook } from '/@/api/book/book';
   import { useMessage } from '/@/hooks/web/useMessage';
   // import { prefixCls } from '/@/settings/designSetting';
 
@@ -178,6 +178,9 @@
       title: '确认删除？',
       content: `确认删除id为${id}的电子书吗？`,
       onOk: async () => {
+        // 删除目录
+        await delContents(id);
+        // 删除书
         await deleteBook(id);
         createMessage.success('删除成功');
         init();

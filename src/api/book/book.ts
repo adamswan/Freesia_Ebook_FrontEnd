@@ -5,6 +5,8 @@ enum Api {
   GetBookList = 'book',
   AddBook = 'book',
   DeleteBook = 'book',
+  AddContents = 'contents',
+  DelteContents = 'contents',
 }
 
 export const getBookList = (query: SearchBook) => {
@@ -23,4 +25,15 @@ export const addBook = (body) => {
 
 export const deleteBook = (id) => {
   return defHttp.delete({ url: `${Api.DeleteBook}/${id}` });
+};
+
+export const addContents = (body) => {
+  return defHttp.post({
+    url: Api.AddContents,
+    data: body,
+  });
+};
+
+export const delContents = (id) => {
+  return defHttp.delete({ url: `${Api.DelteContents}/${id}` });
 };
