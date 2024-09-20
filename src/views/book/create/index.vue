@@ -62,12 +62,8 @@
       async function submitAll() {
         if (pageStatus.value === '编辑') {
           // 编辑时的提交
-          console.log('进编辑');
-          // const contentsData = tableRef!.value!.getDataSource();
-
           try {
             const [values] = await Promise.all([validate()]);
-            console.log('编辑-3333', values);
             await updateOneBook(route?.query?.id, {
               fileName: values.fileName,
               cover: values.coverPath,

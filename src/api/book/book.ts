@@ -7,6 +7,7 @@ enum Api {
   DeleteBook = 'book',
   GetOneBook = 'book',
   UpdateOneBook = 'book',
+  DownloadBook = 'book',
   AddContents = 'contents',
   DelteContents = 'contents',
 }
@@ -50,5 +51,11 @@ export const updateOneBook = (id, body) => {
   return defHttp.post({
     url: `${Api.UpdateOneBook}/update/${id}`,
     data: body,
+  });
+};
+
+export const downloadBook = (id: number) => {
+  return defHttp.get({
+    url: `${Api.DownloadBook}/download/${id}`,
   });
 };

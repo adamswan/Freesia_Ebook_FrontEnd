@@ -85,6 +85,7 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useRouter } from 'vue-router';
   // import { prefixCls } from '/@/settings/designSetting';
+  import { getToken } from '/@/utils/auth';
 
   const totalNum = ref(888);
   const pageNum = ref(1);
@@ -193,10 +194,6 @@
     });
   };
 
-  const handleDownload = (id: number) => {
-    console.log('下载:', id);
-  };
-
   export default defineComponent({
     components: {
       // Icon,
@@ -211,8 +208,46 @@
 
     setup() {
       const router = useRouter();
+
       const handleEdit = (item: any) => {
         router.push(`/book/create?id=${item.id}`);
+      };
+
+      const handleDownload = async (id: number) => {
+        // 1. 发请求获取二进制文件, 因为响应没有响应体，只有二进制数据，所以自定义请求，绕开vben框架复杂的响应数据校验
+        const response = await fetch(`http://localhost:3000/book/download/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+
+        console.log('二进制文件:', response);
+        // 2. 调用响应对象的 arrayBuffer 方法，将后端的返回值读取为ArrayBuffer
+        const arrayBuffer = await response.arrayBuffer();
+
+        // 3. 转为Blob
+        const blob = new Blob([arrayBuffer]);
+
+        // 4. 再转换为一条url
+        const urlStr = URL.createObjectURL(blob);
+        console.log('urlStr', urlStr);
+
+        // 5. urlStr塞入a标签的href属性中
+        const a = document.createElement('a');
+        a.href = urlStr;
+        a.download = 'epub_Book.zip';
+
+        document.body.appendChild(a); // 插入页面
+
+        // 6. 手动触发点击事件
+        a.click();
+
+        document.body.removeChild(a); // 下载后清理
+
+        URL.revokeObjectURL(urlStr); // 释放URL对象
+
+        createMessage.success('下载成功');
       };
 
       return {
