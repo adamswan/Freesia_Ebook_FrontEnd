@@ -36,12 +36,14 @@
   import { useDrawer } from '/@/components/Drawer';
   import UserDrawer from './UserDrawer.vue';
   import { columns, searchFormSchema } from './user.data';
-  import { getAllUserList } from '/@/api/sys/user';
+  import { deleteUser, getAllUserList } from '/@/api/sys/user';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, UserDrawer, TableAction },
     setup() {
+      const { createMessage } = useMessage();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload }] = useTable({
         title: '用户列表',
@@ -64,12 +66,14 @@
         },
       });
 
+      // 新增用户的回调
       function handleCreate() {
         openDrawer(true, {
           isUpdate: false,
         });
       }
 
+      // 编辑用户的回调
       function handleEdit(record: any) {
         openDrawer(true, {
           record,
@@ -77,8 +81,12 @@
         });
       }
 
-      function handleDelete(record: any) {
+      // 删除用户的回调
+      async function handleDelete(record: any) {
         console.log(record);
+        await deleteUser(record.id);
+        createMessage.success('删除成功');
+        handleSuccess();
       }
 
       function handleSuccess() {

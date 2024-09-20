@@ -10,6 +10,9 @@ enum Api {
   GetPermCode = '/getPermCode',
   TestRetry = '/testRetry',
   GetAllUser = 'user',
+  AddNewUser = 'user',
+  EditNewUser = 'user',
+  DeleteUser = 'user',
 }
 
 /**
@@ -59,4 +62,16 @@ export function getAllUserList(queryParams) {
   // 这里的参数，除了page和pageSize外，其余都是 user.data.ts 的 searchFormSchema 对象
   console.log('queryParams', queryParams);
   return defHttp.get({ url: Api.GetAllUser, params: queryParams });
+}
+
+export function addNewUser(data) {
+  return defHttp.post({ url: Api.AddNewUser, data });
+}
+
+export function editNewUser(id, data) {
+  return defHttp.post({ url: `${Api.AddNewUser}/${id}`, data });
+}
+
+export function deleteUser(id) {
+  return defHttp.delete({ url: `${Api.DeleteUser}/${id}` });
 }
