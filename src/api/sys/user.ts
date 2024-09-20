@@ -9,6 +9,7 @@ enum Api {
   GetUserInfo = 'user/info',
   GetPermCode = '/getPermCode',
   TestRetry = '/testRetry',
+  GetAllUser = 'user',
 }
 
 /**
@@ -52,4 +53,10 @@ export function testRetry() {
       },
     },
   );
+}
+
+export function getAllUserList(queryParams) {
+  // 这里的参数，除了page和pageSize外，其余都是 user.data.ts 的 searchFormSchema 对象
+  console.log('queryParams', queryParams);
+  return defHttp.get({ url: Api.GetAllUser, params: queryParams });
 }

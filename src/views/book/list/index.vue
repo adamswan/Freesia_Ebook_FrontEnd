@@ -237,16 +237,12 @@
         const a = document.createElement('a');
         a.href = urlStr;
         a.download = 'epub_Book.zip';
-
         document.body.appendChild(a); // 插入页面
 
         // 6. 手动触发点击事件
         a.click();
-
         document.body.removeChild(a); // 下载后清理
-
         URL.revokeObjectURL(urlStr); // 释放URL对象
-
         createMessage.success('下载成功');
       };
 
