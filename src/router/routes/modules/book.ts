@@ -29,7 +29,7 @@ const book: AppRouteModule = {
       name: 'Create',
       component: () => import('/@/views/book/create/index.vue'),
       meta: {
-        title: '新建电子书',
+        title: '新增/编辑电子书',
       },
     },
   ],

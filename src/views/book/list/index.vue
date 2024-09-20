@@ -21,13 +21,14 @@
                   <span :class="`${prefixCls}__time`">{{ item.time }}</span>
                 </div>
                 <div :class="`${prefixCls}__action`">
-                  <a-button
-                    type="primary"
-                    danger
-                    @click="handleDelete(item.id)"
-                    style="margin-top: 30px"
+                  <!-- 删除按钮 -->
+                  <a-button type="primary" danger @click="handleDelete(item.id)" class="del-btn"
                     >删除</a-button
                   >
+                  <!-- 编辑按钮 -->
+                  <a-button type="primary" @click="handleEdit(item)" class="edi-btn">编辑</a-button>
+                  <!-- 下载按钮 -->
+                  <a-button @click="handleDownload(item.id)" class="edi-btn">下载</a-button>
                 </div>
               </template>
 
@@ -82,6 +83,7 @@
   import { BookList } from '/#/book';
   import { delContents, deleteBook } from '/@/api/book/book';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { useRouter } from 'vue-router';
   // import { prefixCls } from '/@/settings/designSetting';
 
   const totalNum = ref(888);
@@ -191,6 +193,10 @@
     });
   };
 
+  const handleDownload = (id: number) => {
+    console.log('下载:', id);
+  };
+
   export default defineComponent({
     components: {
       // Icon,
@@ -204,6 +210,11 @@
     },
 
     setup() {
+      const router = useRouter();
+      const handleEdit = (item: any) => {
+        router.push(`/book/create?id=${item.id}`);
+      };
+
       return {
         prefixCls: 'list-search',
         actions,
@@ -219,6 +230,8 @@
         bookAuthor,
         handleDelete,
         init,
+        handleEdit,
+        handleDownload,
       };
     },
 
@@ -287,5 +300,15 @@
 
   .the-writer {
     padding-bottom: 10px;
+  }
+
+  .del-btn {
+    margin-top: 30px;
+    margin-right: 20px;
+  }
+
+  .edi-btn {
+    margin-top: 30px;
+    margin-right: 20px;
   }
 </style>

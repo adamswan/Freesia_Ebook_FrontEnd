@@ -147,8 +147,6 @@ export const taskSchemas = (setFieldsValue, contentData): FormSchema[] => {
           });
         },
         onChange: (files) => {
-          console.log('files', files);
-
           if (!files || files.length < 1) {
             return;
           }
