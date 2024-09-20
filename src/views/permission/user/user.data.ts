@@ -46,7 +46,7 @@ export const columns: BasicColumn[] = [
         record.pendingStatus = false;
       }
       return h(Switch, {
-        checked: record.active === 1,
+        checked: record.active === '1',
         disabled: true,
         checkedChildren: '已启用',
         unCheckedChildren: '已禁用',
@@ -75,8 +75,8 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: 1 },
-        { label: '停用', value: 0 },
+        { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
     colProps: { span: 6 },
@@ -114,11 +114,11 @@ export const formSchema: FormSchema[] = [
     field: 'active',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '启用', value: '0' },
-        { label: '停用', value: '1' },
+        { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
   },

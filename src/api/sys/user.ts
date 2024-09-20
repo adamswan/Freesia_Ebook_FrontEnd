@@ -58,10 +58,19 @@ export function testRetry() {
   );
 }
 
-export function getAllUserList(queryParams) {
+export async function getAllUserList(queryParams) {
   // 这里的参数，除了page和pageSize外，其余都是 user.data.ts 的 searchFormSchema 对象
   console.log('queryParams', queryParams);
-  return defHttp.get({ url: Api.GetAllUser, params: queryParams });
+  const res = await defHttp.get({ url: Api.GetAllUser, params: queryParams });
+  console.log('res源头', res);
+  const newArr = res.map((item) => {
+    return {
+      ...item,
+      active: `${item.active}`,
+    };
+  });
+
+  return newArr;
 }
 
 export function addNewUser(data) {

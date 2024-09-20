@@ -69,26 +69,25 @@
         }
       });
 
-      const getTitle = computed(() => (isUpdate.value === false ? '新增用户' : '编辑用户'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增用户' : '编辑用户'));
 
       async function handleSubmit() {
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          console.log('提交表单', values);
+          const activeNum = values.active === '1' ? 1 : 0;
 
-          const activeNum = values.active === '0' ? 1 : 0;
+          const toStrs = `[${values.role}]`;
 
           const oData = {
             username: values.username,
-            // password: values.password,
-            role: values.role,
+            role: toStrs,
             avatar: 'default_pic',
             nickname: values.nickname,
             active: activeNum,
           };
 
-          if (isUpdate.value === false) {
+          if (unref(isUpdate) === false) {
             // 新增
             oData['password'] = values.password;
             await addNewUser(oData);

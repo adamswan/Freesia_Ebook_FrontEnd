@@ -75,6 +75,7 @@
 
       // 编辑用户的回调
       function handleEdit(record: any) {
+        console.log('record编辑', record.active);
         openDrawer(true, {
           record,
           isUpdate: true,
