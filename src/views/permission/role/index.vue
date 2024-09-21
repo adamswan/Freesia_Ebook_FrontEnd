@@ -38,7 +38,10 @@
   import RoleDrawer from './RoleDrawer.vue';
 
   import { columns, searchFormSchema } from './role.data';
-  import { getRoleList } from '../../../api/sys/role';
+  import { deleteRole, getRoleList } from '../../../api/sys/role';
+  import { useMessage } from '/@/hooks/web/useMessage';
+
+  const { createMessage } = useMessage();
 
   export default defineComponent({
     name: 'RoleManagement',
@@ -79,8 +82,10 @@
         });
       }
 
-      function handleDelete(record: any) {
-        console.log(record);
+      async function handleDelete(record: any) {
+        await deleteRole(record.id);
+        createMessage.success('删除成功');
+        handleSuccess();
       }
 
       function handleSuccess() {

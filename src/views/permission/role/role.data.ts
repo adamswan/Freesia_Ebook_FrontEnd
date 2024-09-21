@@ -1,3 +1,4 @@
+import { unref } from 'vue';
 import { BasicColumn, FormSchema } from '/@/components/Table';
 // import { h } from 'vue';
 // import { Switch } from 'ant-design-vue';
@@ -37,17 +38,44 @@ export const searchFormSchema: FormSchema[] = [
   },
 ];
 
-export const formSchema: FormSchema[] = [
-  {
-    field: 'roleName',
-    label: '角色名称',
-    required: true,
-    component: 'Input',
-  },
-  {
-    field: 'roleValue',
-    label: '角色值',
-    required: true,
-    component: 'Input',
-  },
-];
+export const formSchema = (isUpdate): FormSchema[] => {
+  return [
+    // 新增时显示
+    {
+      field: 'name',
+      label: '角色名称',
+      required: true,
+      component: 'Input',
+      ifShow: () => {
+        console.log('布尔', unref(isUpdate));
+        return !unref(isUpdate);
+      },
+    },
+    // 编辑时显示
+    {
+      field: 'name',
+      label: '角色名称',
+      required: true,
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+      },
+      ifShow: () => {
+        return unref(isUpdate);
+      },
+    },
+    {
+      field: 'remark',
+      label: '角色备注',
+      required: true,
+      component: 'Input',
+    },
+    {
+      field: 'menu',
+      label: '菜单分配',
+      required: true,
+      slot: 'menu',
+      component: 'Input',
+    },
+  ];
+};

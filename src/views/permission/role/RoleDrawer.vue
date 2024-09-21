@@ -14,7 +14,7 @@
           :treeData="treeData"
           :fieldNames="{ title: 'menuName', key: 'id' }"
           checkable
-          toolbar
+          :toolbar="false"
           title="菜单分配"
         />
       </template>
@@ -29,6 +29,8 @@
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
   import { getMenuList } from '/@/api/demo/system';
+  import { addNewRole, editRole } from '/@/api/sys/role';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -37,22 +39,27 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
+      const { createMessage } = useMessage();
+
+      let rowData;
 
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
         baseColProps: { span: 24 },
-        schemas: formSchema,
+        schemas: formSchema(isUpdate),
         showActionButtonGroup: false,
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
+        rowData = data;
+        isUpdate.value = !!data?.isUpdate;
         resetFields();
         setDrawerProps({ confirmLoading: false });
+
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         if (unref(treeData).length === 0) {
           treeData.value = (await getMenuList()) as any as TreeItem[];
         }
-        isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
           setFieldsValue({
@@ -67,10 +74,27 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
-          console.log(values);
-          closeDrawer();
-          emit('success');
+          if (unref(isUpdate)) {
+            // 编辑
+            const id = rowData.record.id;
+            await editRole(id, {
+              name: values.name,
+              remark: values.remark,
+              menu: values.menu,
+            });
+            closeDrawer();
+            emit('success');
+            createMessage.success('编辑成功');
+          } else {
+            // 新增
+            await addNewRole({
+              name: values.name,
+              remark: values.remark,
+            });
+            closeDrawer();
+            emit('success');
+            createMessage.success('添加成功');
+          }
         } finally {
           setDrawerProps({ confirmLoading: false });
         }
@@ -82,7 +106,8 @@
         getTitle,
         handleSubmit,
         treeData,
+        isUpdate,
       };
     },
-  });
+  }) as any;
 </script>
