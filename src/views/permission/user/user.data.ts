@@ -123,7 +123,7 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    field: 'role',
+    field: 'role2',
     label: '角色',
     required: false,
     component: 'Input',

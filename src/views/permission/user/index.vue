@@ -75,7 +75,6 @@
 
       // 编辑用户的回调
       function handleEdit(record: any) {
-        console.log('record编辑', record.active);
         openDrawer(true, {
           record,
           isUpdate: true,
@@ -84,7 +83,6 @@
 
       // 删除用户的回调
       async function handleDelete(record: any) {
-        console.log(record);
         await deleteUser(record.id);
         createMessage.success('删除成功');
         handleSuccess();
