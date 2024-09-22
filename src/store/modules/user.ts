@@ -16,6 +16,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 import { isArray } from '/@/utils/is';
 import { h } from 'vue';
+import { GetAuthByRole } from '/@/api/sys/role';
 
 interface UserState {
   userInfo: Nullable<UserInfo>;
@@ -23,10 +24,12 @@ interface UserState {
   roleList: RoleEnum[];
   sessionTimeout?: boolean;
   lastUpdateTime: number;
+  userFunctionAuthMark: string[];
 }
 
 export const useUserStore = defineStore({
   id: 'app-user',
+
   state: (): UserState => ({
     // user info
     userInfo: null,
@@ -38,7 +41,10 @@ export const useUserStore = defineStore({
     sessionTimeout: false,
     // Last fetch time
     lastUpdateTime: 0,
+    // 用户的所有功能权限标识
+    userFunctionAuthMark: [],
   }),
+
   getters: {
     getUserInfo(state): UserInfo {
       return state.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {};
@@ -56,7 +62,12 @@ export const useUserStore = defineStore({
       return state.lastUpdateTime;
     },
   },
+
   actions: {
+    setUserFunctionAuthMark(marks) {
+      this.userFunctionAuthMark = marks;
+    },
+
     setToken(info: string | undefined) {
       this.token = info ? info : ''; // for null or undefined value
       setAuthCache(TOKEN_KEY, info);
@@ -125,21 +136,18 @@ export const useUserStore = defineStore({
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null;
       const userInfo = await getUserInfo();
-
       console.log('userInfo', userInfo);
 
-      // const { role = [] } = userInfo;
+      // 该用户拥有的角色，对应的所有权限标识
+      const authMarks = await GetAuthByRole({ roles: userInfo.role });
+      this.setUserFunctionAuthMark(authMarks);
+      console.log('功能权限标识', authMarks);
 
       const role: any = userInfo.role || [];
-
       const roles = JSON.parse(role);
       // console.log('角色', roles);
 
       if (isArray(roles)) {
-        // 原来的：
-        // const roleList = roles.map((item) => item.value) as RoleEnum[];
-
-        // 我改的
         const roleList = roles as RoleEnum[];
         this.setRoleList(roleList);
       } else {

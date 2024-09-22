@@ -28,7 +28,9 @@
                   <!-- 编辑按钮 -->
                   <a-button type="primary" @click="handleEdit(item)" class="edi-btn">编辑</a-button>
                   <!-- 下载按钮 -->
-                  <a-button @click="handleDownload(item.id)" class="edi-btn">下载</a-button>
+                  <a-button @click="handleDownload(item.id)" class="edi-btn" v-show="isSptDownload"
+                    >下载</a-button
+                  >
                 </div>
               </template>
 
@@ -86,6 +88,8 @@
   import { useRouter } from 'vue-router';
   // import { prefixCls } from '/@/settings/designSetting';
   import { getToken } from '/@/utils/auth';
+  import { useUserStore } from '/@/store/modules/user';
+  import { hasAccess } from '/@/utils/funcAuthControl';
 
   const totalNum = ref(888);
   const pageNum = ref(1);
@@ -209,6 +213,10 @@
     setup() {
       const router = useRouter();
 
+      const userStore = useUserStore();
+      const isSptDownload = ref(false);
+      isSptDownload.value = hasAccess('BOOK_download', userStore.$state.userFunctionAuthMark);
+
       const handleEdit = (item: any) => {
         router.push(`/book/create?id=${item.id}`);
       };
@@ -263,6 +271,7 @@
         init,
         handleEdit,
         handleDownload,
+        isSptDownload,
       };
     },
 

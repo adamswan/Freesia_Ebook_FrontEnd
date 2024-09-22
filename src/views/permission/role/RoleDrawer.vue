@@ -160,6 +160,9 @@
             emit('success');
             createMessage.success('添加成功');
           }
+        } catch (err) {
+          // 错误提示的方法
+          createMessage.error({ content: err.response.data.errorMSG, key: 'saving' });
         } finally {
           setDrawerProps({ confirmLoading: false });
         }

@@ -13,6 +13,14 @@ enum Api {
   AddNewUser = 'user',
   EditNewUser = 'user',
   DeleteUser = 'user',
+  Register = 'user/register',
+}
+
+export function registerApi(oData) {
+  return defHttp.post({
+    url: Api.Register,
+    data: oData,
+  });
 }
 
 /**

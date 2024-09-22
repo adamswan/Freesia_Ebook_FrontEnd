@@ -12,6 +12,11 @@ enum Api {
   GetRoleLinkedAuthList = 'auth/linkedAuth/list',
   DeletAlreadyExist = 'role/linkedMenu',
   DeletAlreadyExist_RoleAuth = 'role/linkedAuth',
+  GetAuthByRole = 'role/getAuthByRole',
+}
+
+export function GetAuthByRole(oData) {
+  return defHttp.post({ url: Api.GetAuthByRole, data: oData });
 }
 
 export function getRoleList(params) {
