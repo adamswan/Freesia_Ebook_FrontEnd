@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增角色 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增权限 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -26,28 +26,27 @@
         </template>
       </template>
     </BasicTable>
-    <RoleDrawer @register="registerDrawer" @success="handleSuccess" />
+    <AuthDrawer @register="registerDrawer" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
-
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getRoleListByPage } from '/@/api/demo/system';
-
   import { useDrawer } from '/@/components/Drawer';
-  import RoleDrawer from './RoleDrawer.vue';
-
-  import { columns, searchFormSchema } from './role.data';
+  import AuthDrawer from './AuthDrawer.vue';
+  import { columns, searchFormSchema } from './auth.data';
+  import { deleteAuth, getMyAuthList } from '@/api/sys/auth';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
-    name: 'RoleManagement',
-    components: { BasicTable, RoleDrawer, TableAction },
+    name: 'AuthManagement',
+    components: { BasicTable, AuthDrawer, TableAction },
     setup() {
+      const { createMessage } = useMessage();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload }] = useTable({
-        title: '角色列表',
-        api: getRoleListByPage,
+        title: '权限列表',
+        api: getMyAuthList,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -79,8 +78,11 @@
         });
       }
 
-      function handleDelete(record: any) {
+      async function handleDelete(record: any) {
         console.log(record);
+        await deleteAuth(record.id);
+        handleSuccess();
+        createMessage.success('删除成功');
       }
 
       function handleSuccess() {

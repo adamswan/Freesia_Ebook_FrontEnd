@@ -7,36 +7,25 @@
     width="500px"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm">
-      <template #menu="{ model, field }">
-        <BasicTree
-          v-model:value="model[field]"
-          :treeData="treeData"
-          :fieldNames="{ title: 'menuName', key: 'id' }"
-          checkable
-          toolbar
-          title="菜单分配"
-        />
-      </template>
-    </BasicForm>
+    <BasicForm @register="registerForm" />
   </BasicDrawer>
 </template>
 <script lang="ts">
   import { defineComponent, ref, computed, unref } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './role.data';
+  import { formSchema } from './auth.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
-  import { BasicTree, TreeItem } from '/@/components/Tree';
-
-  import { getMenuList } from '/@/api/demo/system';
+  import { addNewAuth, editAuth } from '/@/api/sys/auth';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'RoleDrawer',
-    components: { BasicDrawer, BasicForm, BasicTree },
+    components: { BasicDrawer, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const treeData = ref<TreeItem[]>([]);
+      const { createMessage } = useMessage();
+      let rowData;
 
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -46,13 +35,13 @@
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
-        resetFields();
-        setDrawerProps({ confirmLoading: false });
-        // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
-        if (unref(treeData).length === 0) {
-          treeData.value = (await getMenuList()) as any as TreeItem[];
-        }
+        rowData = data;
+
         isUpdate.value = !!data?.isUpdate;
+
+        resetFields();
+
+        setDrawerProps({ confirmLoading: false });
 
         if (unref(isUpdate)) {
           setFieldsValue({
@@ -61,16 +50,25 @@
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增角色' : '编辑角色'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增权限' : '编辑权限'));
 
       async function handleSubmit() {
         try {
           const values = await validate();
+
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
+
           console.log(values);
+          if (unref(isUpdate)) {
+            console.log('编辑权限');
+            await editAuth(rowData.record.id, values);
+          } else {
+            console.log('新增权限', rowData);
+            await addNewAuth(values);
+          }
           closeDrawer();
           emit('success');
+          createMessage.success('操作成功');
         } finally {
           setDrawerProps({ confirmLoading: false });
         }
@@ -81,8 +79,7 @@
         registerForm,
         getTitle,
         handleSubmit,
-        treeData,
       };
     },
-  });
+  }) as any;
 </script>
