@@ -44,7 +44,7 @@ const permission: AppRouteModule = {
       path: 'permission',
       name: 'PermissionManagement',
       meta: {
-        title: '权限管理',
+        title: '功能权限管理',
       },
       component: () => import('/@/views/permission/permission/index.vue'),
     },

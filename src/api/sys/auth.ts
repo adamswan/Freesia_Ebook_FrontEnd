@@ -5,11 +5,7 @@ enum Api {
   AddNewAuth = 'auth',
   EditAuth = 'auth',
   DeleteAuth = 'auth',
-
-  AddRoleLinkedMenu = 'role/linkedMenu',
-  UpdateRoleLinkedMenu = 'role/linkedMenu/update',
-  GetListRoleLinkedMenu = 'role/linkedMenu/list',
-  DeletAlreadyExist = 'role/linkedMenu',
+  AddRoleLinkedAuth = 'auth/linkRoleAndAuth',
 }
 
 export function getMyAuthList(params) {
@@ -28,18 +24,6 @@ export function deleteAuth(id) {
   return defHttp.delete({ url: `${Api.DeleteAuth}/${id}` });
 }
 
-export function deletAlreadyExist(id) {
-  return defHttp.delete({ url: `${Api.DeletAlreadyExist}/${id}` });
-}
-
-export function addRoleLinkedMenu(roleID, menuID) {
-  return defHttp.post({ url: `${Api.AddRoleLinkedMenu}?roleID=${roleID}&menuID=${menuID}` });
-}
-
-export function editRoleLinkedMenu(roleID, menuID) {
-  return defHttp.post({ url: `${Api.UpdateRoleLinkedMenu}?roleID=${roleID}&menuID=${menuID}` });
-}
-
-export function getRoleLinkedMenuList(id) {
-  return defHttp.get({ url: `${Api.GetListRoleLinkedMenu}/${id}` });
+export function addRoleLinkedAuth(roleId, authId) {
+  return defHttp.post({ url: `${Api.AddRoleLinkedAuth}?roleId=${roleId}&authId=${authId}` });
 }

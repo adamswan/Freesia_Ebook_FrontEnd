@@ -7,12 +7,12 @@ export const columns: BasicColumn[] = [
     width: 100,
   },
   {
-    title: '权限Key',
+    title: '功能权限Key',
     dataIndex: 'key',
     width: 200,
   },
   {
-    title: '权限名称',
+    title: '功能权限名称',
     dataIndex: 'name',
     width: 200,
   },
@@ -27,7 +27,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'key',
-    label: '权限Key',
+    label: '功能权限Key',
     component: 'Input',
     colProps: { span: 6 },
   },
@@ -36,13 +36,13 @@ export const searchFormSchema: FormSchema[] = [
 export const formSchema: FormSchema[] = [
   {
     field: 'key',
-    label: '权限Key',
+    label: '功能权限Key',
     required: true,
     component: 'Input',
   },
   {
     field: 'name',
-    label: '权限名称',
+    label: '功能权限名称',
     required: true,
     component: 'Input',
   },

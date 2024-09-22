@@ -50,20 +50,14 @@
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增权限' : '编辑权限'));
-
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增功能权限' : '编辑功能权限'));
       async function handleSubmit() {
         try {
           const values = await validate();
-
           setDrawerProps({ confirmLoading: true });
-
-          console.log(values);
           if (unref(isUpdate)) {
-            console.log('编辑权限');
             await editAuth(rowData.record.id, values);
           } else {
-            console.log('新增权限', rowData);
             await addNewAuth(values);
           }
           closeDrawer();

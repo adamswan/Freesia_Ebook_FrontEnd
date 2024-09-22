@@ -40,8 +40,8 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema = (isUpdate): FormSchema[] => {
   return [
-    // 新增时显示
     {
+      // 新增时显示
       field: 'name',
       label: '角色名称',
       required: true,
@@ -51,8 +51,8 @@ export const formSchema = (isUpdate): FormSchema[] => {
         return !unref(isUpdate);
       },
     },
-    // 编辑时显示
     {
+      // 编辑时显示
       field: 'name',
       label: '角色名称',
       required: true,
@@ -75,6 +75,13 @@ export const formSchema = (isUpdate): FormSchema[] => {
       label: '菜单分配',
       required: true,
       slot: 'menu',
+      component: 'Input',
+    },
+    {
+      field: 'auth',
+      label: '功能权限分配',
+      required: true,
+      slot: 'auth',
       component: 'Input',
     },
   ];

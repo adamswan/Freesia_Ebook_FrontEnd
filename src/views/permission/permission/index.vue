@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增权限 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增功能权限 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -45,7 +45,7 @@
       const { createMessage } = useMessage();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload }] = useTable({
-        title: '权限列表',
+        title: '功能权限列表',
         api: getMyAuthList,
         columns,
         formConfig: {

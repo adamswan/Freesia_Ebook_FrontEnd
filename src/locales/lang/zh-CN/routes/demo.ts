@@ -142,7 +142,7 @@ export default {
     listSearch: '搜索列表',
   },
   permission: {
-    permission: '权限管理',
+    permission: '功能权限管理',
     menu: '菜单管理',
     front: '基于前端权限',
     frontPage: '页面权限',
