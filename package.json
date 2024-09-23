@@ -1,20 +1,8 @@
 {
-  "name": "vben-admin",
-  "version": "2.10.0",
-  "homepage": "https://github.com/vbenjs/vue-vben-admin",
-  "bugs": {
-    "url": "https://github.com/vbenjs/vue-vben-admin/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vbenjs/vue-vben-admin.git"
-  },
+  "name": "freesia_ebook_front-end",
+  "version": "0.0.1",
   "license": "MIT",
-  "author": {
-    "name": "vben",
-    "email": "anncwb@126.com",
-    "url": "https://github.com/anncwb"
-  },
+  "author": "adamswan",
   "scripts": {
     "bootstrap": "pnpm install",
     "build": "cross-env NODE_ENV=production pnpm vite build",
